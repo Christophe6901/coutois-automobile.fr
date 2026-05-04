@@ -10,10 +10,11 @@ const App = {
 
   SOLD_DISPLAY_DAYS: 7,
 
-  async init() {
+async init() {
     await this.loadVehicles();
     this.setupNavToggle();
     this.highlightCurrentNav();
+    this.ready = true;
   },
 
   async loadVehicles() {
@@ -50,6 +51,11 @@ const App = {
   },
 
   renderVehicleGrid(containerId, limit) {
+    if (!this.ready) {
+      var self = this;
+      setTimeout(function() { self.renderVehicleGrid(containerId, limit); }, 200);
+      return;
+    }
     const container = document.getElementById(containerId);
     if (!container) return;
 

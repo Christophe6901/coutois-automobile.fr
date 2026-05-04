@@ -64,7 +64,14 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => App.renderVehicleGrid('vehicles-grid'), 100);
+      function waitAndRender() {
+  if (App.ready) {
+    App.renderVehicleGrid('home-vehicles-grid', 3);
+  } else {
+    setTimeout(waitAndRender, 100);
+  }
+}
+waitAndRender();
     });
   </script>
   <!-- WhatsApp -->

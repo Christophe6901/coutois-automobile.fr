@@ -202,7 +202,14 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Wait for App to load vehicles, then render homepage grid (3 items)
-      setTimeout(() => App.renderVehicleGrid('home-vehicles-grid', 3), 100);
+      function waitAndRender() {
+  if (App.ready) {
+    App.renderVehicleGrid('home-vehicles-grid', 3);
+  } else {
+    setTimeout(waitAndRender, 100);
+  }
+}
+waitAndRender();
     });
   </script>
   <!-- WhatsApp -->
