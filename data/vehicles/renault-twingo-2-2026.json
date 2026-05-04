@@ -1,0 +1,12 @@
+{
+  "km": 130000,
+  "brand": "RENAULT",
+  "guarantee": "3 mois",
+  "price": 1000,
+  "model": "TWINGO 2",
+  "status": "sale",
+  "fuel": "Essence",
+  "createdAt": "2026-05-05",
+  "gearbox": "Manuelle",
+  "year": 2003
+}
