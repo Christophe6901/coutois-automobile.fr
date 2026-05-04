@@ -1057,4 +1057,16 @@ input:focus, select:focus, textarea:focus {
   .section-padding {
     padding: 48px 0;
   }
+
+  /* --- Facade section mobile --- */
+@media (max-width: 768px) {
+  section > div > img[alt*="Coutois"] {
+    object-position: center 30%;
+  }
+  section:has(img[alt*="Coutois"]) {
+    height: 220px !important;
+  }
+  section:has(img[alt*="Coutois"]) h2 {
+    font-size: 28px !important;
+  }
 }
