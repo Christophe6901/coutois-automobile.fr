@@ -1,1 +1,15 @@
-[]
+[
+{
+  "km": 80000,
+  "power": "110",
+  "brand": "VOLKSWAGEN",
+  "guarantee": "3 mois",
+  "price": 2500,
+  "model": "Golf 4 TDI",
+  "status": "sale",
+  "fuel": "Diesel",
+  "createdAt": "2026-05-05",
+  "gearbox": "Manuelle",
+  "year": 2005
+}
+]
