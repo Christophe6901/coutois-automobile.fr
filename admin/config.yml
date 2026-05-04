@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Christophe6901/coutois-automobile.fr
   branch: main
+  base_url: https://coutois-cms-auth.gonzalez-christophe.workers.dev
+  auth_endpoint: /auth
 
 media_folder: "images/vehicules"
 public_folder: "/images/vehicules"

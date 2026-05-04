@@ -20,4 +20,23 @@
   "soldDate": null,
   "createdAt": "2026-04-01"
 }
+,
+{
+  "photos": [
+    "/images/vehicules/nouvelle-version-17032026-5-.png"
+  ],
+  "km": 275000,
+  "soldDate": "2026-05-04",
+  "power": "110",
+  "brand": "CITROEN",
+  "guarantee": "3 mois",
+  "price": 2000,
+  "model": "C3 PICASSO HDI",
+  "status": "sold",
+  "fuel": "Diesel",
+  "createdAt": "2026-04-27",
+  "gearbox": "Manuelle",
+  "year": 2011,
+  "fiscal": "5"
+}
 ]
