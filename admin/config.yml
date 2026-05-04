@@ -1,0 +1,65 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/vehicules"
+public_folder: "/images/vehicules"
+
+# Langue FR
+locale: "fr"
+
+collections:
+  - name: "vehicles"
+    label: "Véhicules"
+    label_singular: "Véhicule"
+    folder: "data/vehicles"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{brand}}-{{model}}-{{year}}"
+    summary: "{{brand}} {{model}} - {{price}}€ ({{status}})"
+    sortable_fields: ["createdAt", "price", "brand"]
+    fields:
+      - { label: "Marque", name: "brand", widget: "string", hint: "Ex: Audi, BMW, Mercedes" }
+      - { label: "Modèle", name: "model", widget: "string", hint: "Ex: Q3 40 TDI Quattro S Line" }
+      - { label: "Prix (€)", name: "price", widget: "number", value_type: "int", min: 0 }
+      - { label: "Année", name: "year", widget: "number", value_type: "int", min: 1990, max: 2030 }
+      - { label: "Kilométrage", name: "km", widget: "number", value_type: "int", min: 0 }
+      - label: "Carburant"
+        name: "fuel"
+        widget: "select"
+        options: ["Diesel", "Essence", "Hybride", "Électrique", "GPL"]
+        default: "Diesel"
+      - label: "Boîte de vitesse"
+        name: "gearbox"
+        widget: "select"
+        options: ["Manuelle", "Automatique"]
+        default: "Manuelle"
+      - { label: "Puissance", name: "power", widget: "string", required: false, hint: "Ex: 190 ch" }
+      - { label: "Puissance fiscale", name: "fiscal", widget: "string", required: false, hint: "Ex: 10 cv" }
+      - { label: "Couleur", name: "color", widget: "string", required: false }
+      - { label: "Mise en circulation", name: "registration", widget: "string", required: false, hint: "Ex: 05/2019" }
+      - { label: "Référence", name: "reference", widget: "string", required: false, hint: "Ex: REF-7740T" }
+      - { label: "Garantie", name: "guarantee", widget: "string", default: "3 mois" }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - label: "Équipements"
+        name: "equipment"
+        widget: "list"
+        field: { label: "Équipement", name: "item", widget: "string" }
+        required: false
+        hint: "Ajoutez chaque équipement un par un"
+      - label: "Photos"
+        name: "photos"
+        widget: "list"
+        field: { label: "Photo", name: "photo", widget: "image" }
+        hint: "Ajoutez les photos du véhicule"
+      - label: "Statut"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "En vente", value: "sale" }
+          - { label: "Vendu", value: "sold" }
+        default: "sale"
+      - { label: "Date de vente", name: "soldDate", widget: "datetime", required: false, date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Date d'ajout", name: "createdAt", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }

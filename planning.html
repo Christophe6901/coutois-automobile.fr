@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planning — Coutois Automobile</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .planning-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      min-height: calc(100vh - 140px);
+    }
+
+    /* --- Inbox --- */
+    .inbox {
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 140px);
+      position: sticky;
+      top: 80px;
+    }
+    .inbox-header {
+      padding: 20px 20px 12px;
+      border-bottom: 3px solid var(--accent);
+    }
+    .inbox-header h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+    .inbox-count {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+    .inbox-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .inbox-item {
+      background: var(--light);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      cursor: grab;
+      border-left: 4px solid var(--accent);
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+    .inbox-item:hover {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .inbox-item.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+    .inbox-item-name {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .inbox-item-vehicle {
+      color: var(--grey);
+      font-size: 12px;
+    }
+    .inbox-item-service {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--white);
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+    }
+    .inbox-item-phone {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .inbox-empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--grey);
+      font-size: 13px;
+    }
+
+    /* --- Calendar --- */
+    .calendar {
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--primary);
+    }
+    .calendar-nav h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+    .calendar-nav button {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      clip-path: var(--clip-btn);
+    }
+    .calendar-nav button:hover { background: var(--accent-dark); }
+
+    /* Mechanic tabs */
+    .mech-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--grey-light);
+    }
+    .mech-tab {
+      flex: 1;
+      padding: 12px 16px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border: none;
+      background: var(--light);
+      color: var(--grey);
+      transition: all 0.2s;
+    }
+    .mech-tab.active {
+      background: var(--white);
+      color: var(--accent);
+      border-bottom: 3px solid var(--accent);
+    }
+    .mech-tab:hover:not(.active) {
+      background: var(--grey-light);
+    }
+
+    /* Week grid */
+    .week-grid {
+      display: grid;
+      grid-template-columns: 70px repeat(6, 1fr);
+      min-height: 600px;
+    }
+    .week-header {
+      padding: 12px 8px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--primary);
+      letter-spacing: 1px;
+      background: var(--light);
+      border-bottom: 1px solid var(--grey-light);
+      border-right: 1px solid var(--grey-light);
+    }
+    .week-header.today {
+      background: var(--accent);
+      color: var(--white);
+    }
+    .week-header small {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0;
+      opacity: 0.7;
+    }
+    .time-col {
+      border-right: 1px solid var(--grey-light);
+    }
+    .time-label {
+      padding: 0 8px;
+      height: 60px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      font-size: 11px;
+      color: var(--grey);
+      font-weight: 500;
+      border-bottom: 1px solid var(--grey-light);
+    }
+    .day-col {
+      border-right: 1px solid var(--grey-light);
+      position: relative;
+    }
+    .time-slot {
+      height: 60px;
+      border-bottom: 1px solid var(--grey-light);
+      position: relative;
+      transition: background 0.15s;
+    }
+    .time-slot:hover {
+      background: rgba(233,69,96,0.04);
+    }
+    .time-slot.drag-over {
+      background: rgba(233,69,96,0.1);
+      outline: 2px dashed var(--accent);
+      outline-offset: -2px;
+    }
+
+    /* Scheduled items */
+    .scheduled-item {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      background: var(--primary);
+      color: var(--white);
+      padding: 6px 8px;
+      font-size: 11px;
+      line-height: 1.3;
+      z-index: 10;
+      cursor: pointer;
+      overflow: hidden;
+      border-left: 3px solid var(--accent);
+      transition: box-shadow 0.2s;
+    }
+    .scheduled-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+    .scheduled-item-name {
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .scheduled-item-service {
+      opacity: 0.8;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+    .scheduled-item-remove {
+      position: absolute;
+      top: 2px; right: 4px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .scheduled-item-remove:hover { color: var(--white); }
+
+    /* Colors for mechanics */
+    .mech-0 { background: #1a1a2e; border-left-color: #e94560; }
+    .mech-1 { background: #16213e; border-left-color: #10b981; }
+
+    /* --- Add RDV manually modal --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      padding: 32px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--primary);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .planning-container {
+        grid-template-columns: 1fr;
+      }
+      .inbox {
+        position: static;
+        max-height: 300px;
+      }
+      .week-grid {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <h1>📅 <span class="accent">PLANNING</span> — Interventions</h1>
+    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+      <button onclick="Planning.openAddModal()" style="background:var(--accent); color:var(--white); border:none; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer;">+ Ajouter un RDV</button>
+      <a href="admin.html" style="color:#a0a8b8; font-size:13px;">← Gestion véhicules</a>
+      <a href="index.html" style="color:var(--accent); font-size:13px;">← Voir le site</a>
+    </div>
+  </header>
+
+  <div class="admin-body">
+    <div class="planning-container">
+
+      <!-- Inbox: incoming RDV requests -->
+      <div class="inbox">
+        <div class="inbox-header">
+          <h2>DEMANDES RDV <span class="inbox-count" id="inbox-count">0</span></h2>
+          <p style="font-size:11px; color:var(--grey); margin-top:4px;">Glissez une demande sur le planning</p>
+        </div>
+        <div class="inbox-list" id="inbox-list">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Calendar -->
+      <div class="calendar">
+        <div class="calendar-nav">
+          <button onclick="Planning.prevWeek()">← SEMAINE PRÉC.</button>
+          <h3 id="calendar-title">Semaine du ...</h3>
+          <button onclick="Planning.nextWeek()">SEMAINE SUIV. →</button>
+        </div>
+
+        <!-- Mechanic tabs -->
+        <div class="mech-tabs">
+          <button class="mech-tab active" data-mech="0" onclick="Planning.switchMech(0)">
+            🔧 MÉCANICIEN 1
+          </button>
+          <button class="mech-tab" data-mech="1" onclick="Planning.switchMech(1)">
+            🔧 MÉCANICIEN 2
+          </button>
+          <button class="mech-tab" data-mech="all" onclick="Planning.switchMech('all')" style="flex:0.6;">
+            👥 TOUS
+          </button>
+        </div>
+
+        <!-- Week grid -->
+        <div style="overflow-x:auto;">
+          <div class="week-grid" id="week-grid">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Settings bar -->
+    <div style="margin-top:24px; background:var(--white); padding:20px 24px; box-shadow:var(--shadow-card); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+        <div>
+          <label class="form-label" style="margin-bottom:4px;">Nom mécano 1</label>
+          <input type="text" id="mech-name-0" value="Mécano 1" style="width:150px; padding:8px 12px; font-size:13px;"
+                 onchange="Planning.updateMechName(0, this.value)">
+        </div>
+        <div>
+          <label class="form-label" style="margin-bottom:4px;">Nom mécano 2</label>
+          <input type="text" id="mech-name-1" value="Mécano 2" style="width:150px; padding:8px 12px; font-size:13px;"
+                 onchange="Planning.updateMechName(1, this.value)">
+        </div>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button class="admin-btn-export" onclick="Planning.exportPlanning()">📤 Exporter planning</button>
+        <button class="admin-btn-export" onclick="document.getElementById('planning-import').click()" style="background:var(--grey-dark);">📥 Importer</button>
+        <input type="file" id="planning-import" accept=".json" style="display:none;" onchange="Planning.importPlanning(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Add RDV Modal -->
+  <div class="modal-overlay" id="add-modal">
+    <div class="modal">
+      <h3>AJOUTER UN RDV</h3>
+      <form id="manual-rdv-form">
+        <div class="form-group">
+          <label class="form-label">Nom du client *</label>
+          <input type="text" id="m-name" required placeholder="Jean Dupont">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Téléphone *</label>
+          <input type="tel" id="m-phone" required placeholder="06 00 00 00 00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Véhicule</label>
+          <input type="text" id="m-vehicle" placeholder="Renault Clio 4 1.5 dCi">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type d'intervention *</label>
+          <select id="m-service" required>
+            <option value="">Choisir...</option>
+            <option>Révision / Vidange</option>
+            <option>Freinage</option>
+            <option>Distribution</option>
+            <option>Embrayage</option>
+            <option>Climatisation</option>
+            <option>Diagnostic</option>
+            <option>Pneus</option>
+            <option>Électricité</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Durée estimée</label>
+          <select id="m-duration">
+            <option value="0.5">30 min</option>
+            <option value="1">1h</option>
+            <option value="1.5">1h30</option>
+            <option value="2" selected>2h</option>
+            <option value="2.5">2h30</option>
+            <option value="3">3h</option>
+            <option value="3.5">3h30</option>
+            <option value="4">4h (demi-journée)</option>
+            <option value="5">5h</option>
+            <option value="6">6h</option>
+            <option value="7">7h</option>
+            <option value="8">Journée complète (8h)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea id="m-notes" rows="2" placeholder="Détails, pièces à commander..."></textarea>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button type="submit" class="btn btn-accent btn-full" style="font-size:16px;">AJOUTER À L'INBOX</button>
+          <button type="button" class="btn btn-primary" style="font-size:16px; white-space:nowrap;" onclick="Planning.closeAddModal()">ANNULER</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Scheduled RDV Modal -->
+  <div class="modal-overlay" id="edit-scheduled-modal">
+    <div class="modal">
+      <h3>DÉTAIL INTERVENTION</h3>
+      <input type="hidden" id="edit-s-id">
+
+      <div style="margin-bottom:20px; padding:16px; background:var(--light);">
+        <div style="font-size:11px; color:var(--grey); text-transform:uppercase; letter-spacing:1px;">Client</div>
+        <div id="edit-s-name" style="font-weight:700; font-size:16px; color:var(--primary); margin-top:2px;"></div>
+        <div style="margin-top:8px; font-size:13px; color:var(--grey);">📞 <span id="edit-s-phone"></span></div>
+        <div style="margin-top:4px; font-size:13px; color:var(--grey);">🚗 <span id="edit-s-vehicle"></span></div>
+        <div style="margin-top:4px; font-size:13px; color:var(--grey);">🔧 <span id="edit-s-service"></span></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Durée de l'intervention *</label>
+        <select id="edit-s-duration" style="font-size:15px;">
+          <option value="0.5">30 min</option>
+          <option value="1">1h</option>
+          <option value="1.5">1h30</option>
+          <option value="2">2h</option>
+          <option value="2.5">2h30</option>
+          <option value="3">3h</option>
+          <option value="3.5">3h30</option>
+          <option value="4">4h (demi-journée)</option>
+          <option value="5">5h</option>
+          <option value="6">6h</option>
+          <option value="7">7h</option>
+          <option value="8">Journée complète (8h)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mécanicien assigné</label>
+        <select id="edit-s-mechanic" style="font-size:15px;">
+          <option value="0">Mécano 1</option>
+          <option value="1">Mécano 2</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea id="edit-s-notes" rows="3" placeholder="Pièces à commander, détails..."></textarea>
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        <button type="button" class="btn btn-accent btn-full" style="font-size:16px;" onclick="Planning.saveEditScheduled()">ENREGISTRER</button>
+        <button type="button" class="btn btn-primary" style="font-size:16px; white-space:nowrap;" onclick="Planning.closeEditScheduled()">ANNULER</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ============================================
+     PLANNING ENGINE
+     ============================================ */
+  const Planning = {
+    rdvInbox: [],       // Unscheduled RDV requests
+    scheduled: [],      // Scheduled items: {id, name, phone, vehicle, service, duration, notes, mechanic, day, hour}
+    currentWeekStart: null,
+    currentMech: 0,     // 0, 1, or 'all'
+    mechNames: ['Mécano 1', 'Mécano 2'],
+    dragData: null,
+
+    HOURS_START: 8,
+    HOURS_END: 18,
+    DAYS: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+
+    init() {
+      this.loadData();
+      this.setCurrentWeek();
+      this.render();
+      this.setupFormSubmit();
+    },
+
+    // --- Data persistence ---
+    loadData() {
+      const inbox = localStorage.getItem('garage_rdv_inbox');
+      const sched = localStorage.getItem('garage_scheduled');
+      const names = localStorage.getItem('garage_mech_names');
+      if (inbox) this.rdvInbox = JSON.parse(inbox);
+      if (sched) this.scheduled = JSON.parse(sched);
+      if (names) {
+        this.mechNames = JSON.parse(names);
+        const n0 = document.getElementById('mech-name-0');
+        const n1 = document.getElementById('mech-name-1');
+        if (n0) n0.value = this.mechNames[0];
+        if (n1) n1.value = this.mechNames[1];
+      }
+    },
+
+    saveData() {
+      localStorage.setItem('garage_rdv_inbox', JSON.stringify(this.rdvInbox));
+      localStorage.setItem('garage_scheduled', JSON.stringify(this.scheduled));
+      localStorage.setItem('garage_mech_names', JSON.stringify(this.mechNames));
+    },
+
+    // --- Week navigation ---
+    setCurrentWeek() {
+      const now = new Date();
+      const day = now.getDay();
+      const diff = day === 0 ? -6 : 1 - day; // Monday
+      this.currentWeekStart = new Date(now);
+      this.currentWeekStart.setDate(now.getDate() + diff);
+      this.currentWeekStart.setHours(0,0,0,0);
+    },
+
+    prevWeek() {
+      this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
+      this.render();
+    },
+
+    nextWeek() {
+      this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
+      this.render();
+    },
+
+    switchMech(mech) {
+      this.currentMech = mech;
+      document.querySelectorAll('.mech-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.mech == mech);
+      });
+      // Update tab names
+      document.querySelector('[data-mech="0"]').textContent = '🔧 ' + this.mechNames[0].toUpperCase();
+      document.querySelector('[data-mech="1"]').textContent = '🔧 ' + this.mechNames[1].toUpperCase();
+      this.renderCalendar();
+    },
+
+    updateMechName(index, name) {
+      this.mechNames[index] = name || `Mécano ${index + 1}`;
+      this.saveData();
+      this.switchMech(this.currentMech); // refresh tabs
+    },
+
+    // --- Render all ---
+    render() {
+      this.renderInbox();
+      this.renderCalendar();
+      // Update tab names
+      document.querySelector('[data-mech="0"]').textContent = '🔧 ' + this.mechNames[0].toUpperCase();
+      document.querySelector('[data-mech="1"]').textContent = '🔧 ' + this.mechNames[1].toUpperCase();
+    },
+
+    // --- Inbox ---
+    renderInbox() {
+      const list = document.getElementById('inbox-list');
+      const count = document.getElementById('inbox-count');
+      if (!list) return;
+
+      count.textContent = this.rdvInbox.length;
+
+      if (this.rdvInbox.length === 0) {
+        list.innerHTML = '<div class="inbox-empty">📭 Aucune demande en attente</div>';
+        return;
+      }
+
+      list.innerHTML = this.rdvInbox.map(r => `
+        <div class="inbox-item" draggable="true" 
+             ondragstart="Planning.onDragStart(event, '${r.id}')"
+             ondragend="Planning.onDragEnd(event)">
+          <div class="inbox-item-name">${r.name}</div>
+          <div class="inbox-item-vehicle">${r.vehicle || 'Véhicule non précisé'}</div>
+          <div class="inbox-item-service" style="background:${r.rdvType === 'devis' ? 'var(--accent)' : r.rdvType === 'achat' ? '#10b981' : 'var(--primary)'};">${r.service} · ${Planning.formatDuration(r.duration)}</div>
+          <div class="inbox-item-phone">📞 ${r.phone}</div>
+          ${r.notes ? `<div style="font-size:11px; color:var(--grey); margin-top:4px; font-style:italic;">${r.notes}</div>` : ''}
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <button class="admin-btn admin-btn-delete" style="font-size:10px; padding:3px 8px;" 
+                    onclick="Planning.removeInbox('${r.id}')">Supprimer</button>
+          </div>
+        </div>
+      `).join('');
+    },
+
+    removeInbox(id) {
+      this.rdvInbox = this.rdvInbox.filter(r => r.id !== id);
+      this.saveData();
+      this.renderInbox();
+    },
+
+    // --- Calendar grid ---
+    renderCalendar() {
+      const grid = document.getElementById('week-grid');
+      const title = document.getElementById('calendar-title');
+      if (!grid) return;
+
+      const ws = new Date(this.currentWeekStart);
+      const we = new Date(ws);
+      we.setDate(we.getDate() + 5);
+
+      const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+      title.textContent = `Semaine du ${ws.getDate()} ${months[ws.getMonth()]} ${ws.getFullYear()}`;
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      let html = '';
+
+      // Header row
+      html += '<div class="week-header" style="background:var(--primary); color:var(--grey);">Heure</div>';
+      for (let d = 0; d < 6; d++) {
+        const date = new Date(ws);
+        date.setDate(ws.getDate() + d);
+        const isToday = date.getTime() === today.getTime();
+        html += `<div class="week-header ${isToday ? 'today' : ''}">
+          ${this.DAYS[d]} <small>${date.getDate()}/${date.getMonth()+1}</small>
+        </div>`;
+      }
+
+      // Time rows
+      for (let h = this.HOURS_START; h < this.HOURS_END; h++) {
+        // Time label
+        html += `<div class="time-label">${String(h).padStart(2,'0')}:00</div>`;
+        // Day cells
+        for (let d = 0; d < 6; d++) {
+          const dateStr = this.getDateStr(d);
+          html += `<div class="time-slot" 
+                       data-day="${dateStr}" data-hour="${h}"
+                       ondragover="Planning.onDragOver(event)"
+                       ondragleave="Planning.onDragLeave(event)"
+                       ondrop="Planning.onDrop(event, '${dateStr}', ${h})">
+          </div>`;
+        }
+      }
+
+      grid.innerHTML = html;
+
+      // Place scheduled items
+      this.renderScheduledItems();
+    },
+
+    renderScheduledItems() {
+      const items = this.currentMech === 'all' 
+        ? this.scheduled 
+        : this.scheduled.filter(s => s.mechanic === this.currentMech);
+
+      items.forEach(item => {
+        const slot = document.querySelector(`.time-slot[data-day="${item.day}"][data-hour="${item.hour}"]`);
+        if (!slot) return;
+
+        const height = (item.duration || 2) * 60 - 4;
+        const mechClass = `mech-${item.mechanic}`;
+        
+        const el = document.createElement('div');
+        el.className = `scheduled-item ${mechClass}`;
+        el.style.height = height + 'px';
+        el.style.top = '2px';
+        
+        // If showing all mechanics, split the width
+        if (this.currentMech === 'all') {
+          const width = 'calc(50% - 3px)';
+          el.style.width = width;
+          if (item.mechanic === 1) {
+            el.style.left = 'calc(50% + 1px)';
+            el.style.right = 'auto';
+          }
+        }
+
+        el.innerHTML = `
+          <div class="scheduled-item-name">${item.name}</div>
+          <div class="scheduled-item-service">${item.service} · ${Planning.formatDuration(item.duration)}</div>
+          ${this.currentMech === 'all' ? `<div style="font-size:9px; opacity:0.6; margin-top:1px;">${this.mechNames[item.mechanic]}</div>` : ''}
+          <button class="scheduled-item-remove" onclick="Planning.unschedule('${item.id}')" title="Retirer">×</button>
+        `;
+
+        el.addEventListener('click', (e) => {
+          if (e.target.classList.contains('scheduled-item-remove')) return;
+          Planning.openEditScheduled(item.id);
+        });
+
+        slot.appendChild(el);
+      });
+    },
+
+    // --- Edit scheduled item (duration, mechanic, notes) ---
+    openEditScheduled(id) {
+      const item = this.scheduled.find(s => s.id === id);
+      if (!item) return;
+
+      document.getElementById('edit-s-name').textContent = item.name;
+      document.getElementById('edit-s-phone').textContent = item.phone || '—';
+      document.getElementById('edit-s-vehicle').textContent = item.vehicle || '—';
+      document.getElementById('edit-s-service').textContent = item.service;
+      document.getElementById('edit-s-duration').value = item.duration || 2;
+      document.getElementById('edit-s-mechanic').value = item.mechanic;
+      document.getElementById('edit-s-notes').value = item.notes || '';
+      document.getElementById('edit-s-id').value = id;
+
+      // Update mechanic select with actual names
+      const mechSelect = document.getElementById('edit-s-mechanic');
+      mechSelect.innerHTML = this.mechNames.map((name, i) => 
+        `<option value="${i}" ${i === item.mechanic ? 'selected' : ''}>${name}</option>`
+      ).join('');
+
+      document.getElementById('edit-scheduled-modal').classList.add('open');
+    },
+
+    saveEditScheduled() {
+      const id = document.getElementById('edit-s-id').value;
+      const item = this.scheduled.find(s => s.id === id);
+      if (!item) return;
+
+      const newDuration = parseFloat(document.getElementById('edit-s-duration').value) || 2;
+      const newMech = parseInt(document.getElementById('edit-s-mechanic').value);
+      const newNotes = document.getElementById('edit-s-notes').value.trim();
+
+      // Check overlap with new duration (excluding self)
+      const hasOverlap = this.scheduled.some(s => {
+        if (s.id === id) return false;
+        if (s.mechanic !== newMech || s.day !== item.day) return false;
+        const sEnd = s.hour + (s.duration || 2);
+        const newEnd = item.hour + newDuration;
+        return (item.hour < sEnd && newEnd > s.hour);
+      });
+
+      if (hasOverlap) {
+        this.toast('Chevauchement détecté ! Réduisez la durée ou changez de mécano.', 'error');
+        return;
+      }
+
+      item.duration = newDuration;
+      item.mechanic = newMech;
+      item.notes = newNotes;
+
+      this.saveData();
+      document.getElementById('edit-scheduled-modal').classList.remove('open');
+      this.renderCalendar();
+      this.toast('Intervention mise à jour', 'success');
+    },
+
+    closeEditScheduled() {
+      document.getElementById('edit-scheduled-modal').classList.remove('open');
+    },
+
+    getDateStr(dayIndex) {
+      const date = new Date(this.currentWeekStart);
+      date.setDate(this.currentWeekStart.getDate() + dayIndex);
+      return date.toISOString().split('T')[0];
+    },
+
+    // --- Drag & Drop ---
+    onDragStart(event, rdvId) {
+      this.dragData = rdvId;
+      event.target.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+    },
+
+    onDragEnd(event) {
+      event.target.classList.remove('dragging');
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    },
+
+    onDragOver(event) {
+      event.preventDefault();
+      event.currentTarget.classList.add('drag-over');
+    },
+
+    onDragLeave(event) {
+      event.currentTarget.classList.remove('drag-over');
+    },
+
+    onDrop(event, day, hour) {
+      event.preventDefault();
+      event.currentTarget.classList.remove('drag-over');
+
+      if (!this.dragData) return;
+
+      const rdv = this.rdvInbox.find(r => r.id === this.dragData);
+      if (!rdv) return;
+
+      // Determine which mechanic
+      const mech = this.currentMech === 'all' ? 0 : this.currentMech;
+
+      // Check for overlap
+      const hasOverlap = this.scheduled.some(s => {
+        if (s.mechanic !== mech || s.day !== day) return false;
+        const sEnd = s.hour + (s.duration || 2);
+        const newEnd = hour + (rdv.duration || 2);
+        return (hour < sEnd && newEnd > s.hour);
+      });
+
+      if (hasOverlap) {
+        this.toast('Créneau déjà occupé pour ce mécanicien !', 'error');
+        return;
+      }
+
+      // Schedule it
+      const scheduled = {
+        ...rdv,
+        mechanic: mech,
+        day: day,
+        hour: hour,
+      };
+
+      this.scheduled.push(scheduled);
+      this.rdvInbox = this.rdvInbox.filter(r => r.id !== this.dragData);
+      this.dragData = null;
+
+      this.saveData();
+      this.render();
+      this.toast(`${rdv.name} planifié !`, 'success');
+    },
+
+    // --- Unschedule (back to inbox) ---
+    unschedule(id) {
+      const item = this.scheduled.find(s => s.id === id);
+      if (!item) return;
+
+      // Move back to inbox
+      const { mechanic, day, hour, ...rdvData } = item;
+      this.rdvInbox.push(rdvData);
+      this.scheduled = this.scheduled.filter(s => s.id !== id);
+
+      this.saveData();
+      this.render();
+      this.toast('RDV remis dans l\'inbox', 'success');
+    },
+
+    // --- Manual RDV add ---
+    openAddModal() {
+      document.getElementById('add-modal').classList.add('open');
+    },
+
+    closeAddModal() {
+      document.getElementById('add-modal').classList.remove('open');
+      document.getElementById('manual-rdv-form').reset();
+    },
+
+    setupFormSubmit() {
+      const form = document.getElementById('manual-rdv-form');
+      if (!form) return;
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const rdv = {
+          id: 'rdv_' + Date.now(),
+          name: document.getElementById('m-name').value.trim(),
+          phone: document.getElementById('m-phone').value.trim(),
+          vehicle: document.getElementById('m-vehicle').value.trim(),
+          service: document.getElementById('m-service').value,
+          duration: parseFloat(document.getElementById('m-duration').value) || 2,
+          notes: document.getElementById('m-notes').value.trim(),
+          createdAt: new Date().toISOString(),
+        };
+
+        if (!rdv.name || !rdv.phone || !rdv.service) {
+          this.toast('Remplissez nom, téléphone et intervention', 'error');
+          return;
+        }
+
+        this.rdvInbox.push(rdv);
+        this.saveData();
+        this.renderInbox();
+        this.closeAddModal();
+        this.toast(`RDV de ${rdv.name} ajouté à l'inbox`, 'success');
+      });
+    },
+
+    // --- Export / Import ---
+    exportPlanning() {
+      const data = {
+        inbox: this.rdvInbox,
+        scheduled: this.scheduled,
+        mechNames: this.mechNames,
+        exportDate: new Date().toISOString(),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `planning-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      this.toast('Planning exporté !', 'success');
+    },
+
+    importPlanning(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (!confirm('Importer ce planning ? Les données actuelles seront remplacées.')) return;
+          if (data.inbox) this.rdvInbox = data.inbox;
+          if (data.scheduled) this.scheduled = data.scheduled;
+          if (data.mechNames) {
+            this.mechNames = data.mechNames;
+            document.getElementById('mech-name-0').value = this.mechNames[0];
+            document.getElementById('mech-name-1').value = this.mechNames[1];
+          }
+          this.saveData();
+          this.render();
+          this.toast('Planning importé !', 'success');
+        } catch (err) {
+          this.toast('Erreur : fichier invalide', 'error');
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    // --- Format duration ---
+    formatDuration(d) {
+      if (!d) return '2h';
+      const hours = Math.floor(d);
+      const mins = Math.round((d - hours) * 60);
+      if (mins === 0) return `${hours}h`;
+      if (hours === 0) return `${mins}min`;
+      return `${hours}h${String(mins).padStart(2,'0')}`;
+    },
+
+    // --- Toast ---
+    toast(message, type = 'success') {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    },
+  };
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => Planning.init());
+  </script>
+</body>
+</html>

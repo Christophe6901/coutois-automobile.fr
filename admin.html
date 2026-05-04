@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration — Coutois Automobile</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <h1>⚙️ <span class="accent">ADMIN</span> — Gestion des véhicules</h1>
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <span id="admin-stats" style="font-size:13px; color:#a0a8b8;"></span>
+      <a href="planning.html" style="background:var(--accent); color:var(--white); padding:6px 14px; font-size:13px; font-weight:600;">📅 Planning</a>
+      <a href="index.html" style="color:var(--accent); font-size:13px;">← Voir le site</a>
+    </div>
+  </header>
+
+  <div class="admin-body">
+
+    <!-- Top action bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:16px;">
+      <h2 class="font-display" style="font-size:28px; color:var(--primary);">TABLEAU DE BORD</h2>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="admin-btn-export" id="admin-export-btn">📤 Exporter pour le site</button>
+        <button class="admin-btn-export" id="admin-export-all-btn" style="background:var(--primary);">💾 Sauvegarde complète</button>
+        <button class="admin-btn-export" id="admin-import-btn" style="background:var(--grey-dark);">📥 Importer</button>
+        <input type="file" id="admin-import-input" accept=".json" style="display:none;">
+        <button class="admin-btn-export" style="background:#dc2626;" onclick="if(confirm('Supprimer TOUTES les données véhicules du navigateur ? (irréversible)')) { localStorage.removeItem('garage_vehicles'); location.reload(); }">🗑️ Vider le cache</button>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+
+      <!-- Left: Vehicle List -->
+      <div class="admin-card">
+        <h2>VÉHICULES</h2>
+        <div id="admin-vehicle-list">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Right: Add/Edit Form -->
+      <div class="admin-card">
+        <h2 id="admin-form-title">AJOUTER UN VÉHICULE</h2>
+
+        <form id="admin-form">
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-brand">Marque *</label>
+              <input type="text" id="f-brand" placeholder="Audi, BMW, Mercedes..." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-model">Modèle *</label>
+              <input type="text" id="f-model" placeholder="Q3 40 TDI Quattro S Line" required>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-price">Prix (€) *</label>
+              <input type="number" id="f-price" placeholder="25990" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-year">Année *</label>
+              <input type="number" id="f-year" placeholder="2021" required>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-km">Kilométrage</label>
+              <input type="number" id="f-km" placeholder="87000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-fuel">Carburant</label>
+              <select id="f-fuel">
+                <option>Diesel</option>
+                <option>Essence</option>
+                <option>Hybride</option>
+                <option>Électrique</option>
+                <option>GPL</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-gearbox">Boîte de vitesse</label>
+              <select id="f-gearbox">
+                <option>Manuelle</option>
+                <option>Automatique</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-power">Puissance</label>
+              <input type="text" id="f-power" placeholder="190 ch">
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-fiscal">Puissance fiscale</label>
+              <input type="text" id="f-fiscal" placeholder="10 cv">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-color">Couleur</label>
+              <input type="text" id="f-color" placeholder="Gris Daytona">
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="f-registration">Mise en circulation</label>
+              <input type="text" id="f-registration" placeholder="05/2019">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-guarantee">Garantie</label>
+              <input type="text" id="f-guarantee" placeholder="3 mois" value="3 mois">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="f-description">Description</label>
+            <textarea id="f-description" rows="3" placeholder="État du véhicule, historique, points forts..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="f-equipment">Équipements (un par ligne)</label>
+            <textarea id="f-equipment" rows="6" placeholder="GPS grand écran
+Sièges cuir
+Caméra de recul
+Climatisation bi-zone
+..."></textarea>
+          </div>
+
+          <!-- Photo upload -->
+          <div class="form-group">
+            <label class="form-label">Photos du véhicule</label>
+            <div class="photo-upload-area" id="photo-upload-area">
+              📷 Cliquer pour ajouter des photos
+              <input type="file" id="f-photos" accept="image/*" multiple style="display:none;">
+            </div>
+            <div class="photo-preview-grid" id="photo-preview"></div>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:8px;">
+            <button type="button" id="admin-submit-btn" class="btn btn-accent btn-full" style="font-size:18px;">AJOUTER LE VÉHICULE</button>
+            <button type="button" id="admin-cancel-edit" class="btn btn-primary" style="font-size:18px; display:none; white-space:nowrap;">ANNULER</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Usage guide -->
+    <div style="margin-top:48px; background:var(--white); padding:32px; box-shadow:var(--shadow-card);">
+      <h3 class="font-display" style="font-size:22px; color:var(--primary); margin-bottom:16px; border-bottom:3px solid var(--accent); padding-bottom:8px;">📘 MODE D'EMPLOI</h3>
+      <div style="font-size:14px; color:var(--grey); line-height:1.8;">
+        <p><strong style="color:var(--primary);">Ajouter un véhicule :</strong> Remplissez le formulaire à droite (Marque, Modèle et Prix sont obligatoires). Ajoutez des photos et cliquez "Ajouter".</p>
+        <p style="margin-top:8px;"><strong style="color:var(--primary);">Marquer comme vendu :</strong> Cliquez le bouton vert "Vendu ✓" sur le véhicule. Il restera visible sur le site pendant 7 jours avec un bandeau VENDU bien visible, puis sera automatiquement retiré.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--primary);">Publier sur le site :</strong> Cliquez "📤 Exporter pour le site" pour télécharger le fichier <code>vehicles.json</code>. Placez ce fichier dans le dossier <code>data/</code> de votre site (en remplaçant l'ancien).</p>
+        <p style="margin-top:8px;"><strong style="color:var(--primary);">Sauvegarder :</strong> "💾 Sauvegarde complète" exporte tout (y compris les véhicules vendus) pour pouvoir restaurer plus tard via "📥 Importer".</p>
+        <p style="margin-top:16px; padding:12px 16px; background:var(--light); border-left:4px solid var(--accent);">
+          <strong style="color:var(--accent);">⚠️ Important :</strong> Les données sont stockées dans votre navigateur. Si vous changez de navigateur ou videz le cache, utilisez la sauvegarde complète pour ne rien perdre.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

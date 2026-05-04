@@ -1,0 +1,21 @@
+{
+  "brand": "Audi",
+  "model": "Q3 40 TDI Quattro S Line",
+  "price": 25990,
+  "year": 2019,
+  "km": 129000,
+  "fuel": "Diesel",
+  "gearbox": "Automatique",
+  "power": "190 ch",
+  "fiscal": "10 cv",
+  "color": "Gris Daytona",
+  "registration": "05/2019",
+  "reference": "REF-7740T",
+  "guarantee": "3 mois",
+  "description": "Modèle Audi Q3 40 TDI QUATTRO S LINE. Pack S LINE, boîte automatique. Véhicule en excellent état, rien à prévoir. CT ok, révision complète, pneus ok, freins ok.",
+  "equipment": ["Sièges semi-cuir", "Détecteur angles morts", "GPS grand écran", "Accès confort sans clé", "Aide au stationnement AV/AR + caméra", "Régulateur de vitesse", "Volant multifonction", "Feux LED", "Climatisation bi-zone", "Jantes aluminium", "Bluetooth", "USB", "Start & Stop"],
+  "photos": [],
+  "status": "sale",
+  "soldDate": null,
+  "createdAt": "2026-04-01"
+}
