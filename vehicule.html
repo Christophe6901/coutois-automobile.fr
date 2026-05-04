@@ -25,7 +25,7 @@
 
       <a href="vehicules.html" class="back-link">← Retour aux véhicules</a>
 
-      <div class="grid-2" style="grid-template-columns: 1fr 400px;">
+      <div class="grid-2 detail-grid">
         <!-- Left: images -->
         <div>
           <div class="detail-main-img">
@@ -62,7 +62,7 @@
             DEMANDER UN DEVIS MÉCANIQUE
           </a>
 
-          <button onclick="document.getElementById('contact-vehicle-modal').classList.add('open')" class="btn btn-full" style="font-size:16px; margin-top:12px; padding:12px; background:var(--success); color:var(--white); clip-path:var(--clip-btn);" id="detail-btn-interest">
+          <button onclick="document.getElementById('contact-vehicle-modal').classList.add('open'); document.getElementById('contact-vehicle-modal').style.display='flex';" class="btn btn-full" style="font-size:16px; margin-top:12px; padding:12px; background:var(--success); color:var(--white); clip-path:var(--clip-btn);" id="detail-btn-interest">
             🚗 JE SUIS INTÉRESSÉ(E)
           </button>
         </div>
@@ -159,7 +159,6 @@
       setTimeout(function() {
         App.renderVehicleDetail();
         
-        // After render, populate modal with vehicle info
         setTimeout(function() {
           var params = new URLSearchParams(window.location.search);
           var id = params.get('id');
@@ -175,7 +174,6 @@
           document.getElementById('vc-vehicle-ref').value = ref;
           document.getElementById('vc-vehicle-name').value = fullName;
 
-          // Hide interest button if sold
           if (v.status === 'sold') {
             var btn = document.getElementById('detail-btn-interest');
             if (btn) btn.style.display = 'none';
@@ -183,16 +181,6 @@
         }, 200);
       }, 100);
     });
-
-    // Open modal with display flex
-    var interestBtn = document.getElementById('detail-btn-interest');
-    if (interestBtn) {
-      interestBtn.addEventListener('click', function() {
-        var modal = document.getElementById('contact-vehicle-modal');
-        modal.style.display = 'flex';
-        modal.classList.add('open');
-      });
-    }
 
     // Submit vehicle contact form
     document.getElementById('vc-submit').addEventListener('click', function() {
@@ -204,7 +192,6 @@
         return;
       }
 
-      // Submit to Netlify Forms
       var form = document.getElementById('vehicle-contact-form');
       var formData = new FormData(form);
       fetch('/', {
@@ -213,7 +200,6 @@
         body: new URLSearchParams(formData).toString()
       }).catch(function(err) { console.log('Netlify Forms fallback:', err); });
 
-      // Also save to localStorage for planning (local use)
       try {
         var rdv = {
           id: 'rdv_' + Date.now(),
@@ -230,7 +216,7 @@
         var inbox = JSON.parse(localStorage.getItem('garage_rdv_inbox') || '[]');
         inbox.push(rdv);
         localStorage.setItem('garage_rdv_inbox', JSON.stringify(inbox));
-      } catch(err) { /* localStorage may not be available */ }
+      } catch(err) { }
 
       document.getElementById('vehicle-contact-form').style.display = 'none';
       document.getElementById('vc-confirmation').style.display = 'block';

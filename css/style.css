@@ -975,3 +975,86 @@ input:focus, select:focus, textarea:focus {
   background: var(--accent);
   color: var(--white);
 }
+
+/* ============================================
+   PATCH MOBILE — Coller ce bloc à la fin de style.css
+   (juste avant la dernière accolade si elle existe,
+    ou tout à la fin du fichier)
+   ============================================ */
+
+/* --- Vehicle detail grid (desktop) --- */
+.detail-grid {
+  grid-template-columns: 1fr 400px;
+}
+
+/* --- Mobile fixes --- */
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+  .detail-main-img img {
+    height: 250px;
+  }
+  .detail-thumbs img {
+    width: 70px;
+    height: 50px;
+  }
+  #detail-title {
+    font-size: 26px !important;
+  }
+  .detail-spec-row {
+    padding: 10px 14px;
+  }
+  .detail-spec-label {
+    font-size: 11px;
+  }
+  .detail-spec-value {
+    font-size: 13px;
+  }
+  .detail-spec-value.price {
+    font-size: 20px !important;
+  }
+  .detail-equipment-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hero h1 {
+    font-size: 36px !important;
+  }
+  .hero p {
+    font-size: 15px;
+  }
+  .section-title {
+    font-size: 28px !important;
+  }
+  .stats-bar .stat-number {
+    font-size: 36px;
+  }
+  .cta-banner h2 {
+    font-size: 24px !important;
+  }
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .service-card {
+    padding: 20px 18px;
+  }
+  .footer-cols {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .footer-top {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .btn {
+    font-size: 15px;
+    padding: 12px 24px;
+  }
+  .container {
+    padding: 0 16px;
+  }
+  .section-padding {
+    padding: 48px 0;
+  }
+}
