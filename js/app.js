@@ -41,7 +41,8 @@ async init() {
     this.allVehicles = data.filter(v => {
       if (v.status === 'sale') return true;
       if (v.status === 'sold' && v.soldDate) {
-        const diff = (now - new Date(v.soldDate)) / (1000 * 60 * 60 * 24);
+        const soldDate = new Date(v.soldDate + 'T23:59:59');
+        const diff = (now - soldDate) / (1000 * 60 * 60 * 24);
         return diff <= this.SOLD_DISPLAY_DAYS;
       }
       return false;
