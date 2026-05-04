@@ -8,17 +8,6 @@
 </head>
 <body>
 
-<!-- Netlify Forms detection -->
-<form name="interet-vehicule" netlify netlify-honeypot="bot-field" hidden>
-  <input name="form-name" type="hidden" value="interet-vehicule">
-  <input name="reference-vehicule">
-  <input name="vehicule-concerne">
-  <input name="nom">
-  <input name="telephone">
-  <input name="email">
-  <textarea name="message"></textarea>
-</form>
-
   <nav class="nav">
     <a href="index.html" class="nav-logo"><span class="accent">COUTOIS</span> AUTOMOBILE</a>
     <button class="nav-toggle" id="nav-toggle">☰</button>
@@ -100,8 +89,11 @@
         <div id="modal-vehicle-ref" style="font-size:12px; color:var(--grey);"></div>
       </div>
 
-      <form id="vehicle-contact-form" name="interet-vehicule" method="POST" data-netlify="true">
-        <input type="hidden" name="form-name" value="interet-vehicule">
+      <form id="vehicle-contact-form" name="interet-vehicule" method="POST" action="https://formsubmit.co/coutoisautomobile@gmail.com">
+        <input type="hidden" name="_subject" value="Intérêt Véhicule">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://coutois-automobile.fr/vehicules.html">
+        <input type="hidden" name="_template" value="table">
         <input type="hidden" id="vc-vehicle-ref" name="reference-vehicule" value="">
         <input type="hidden" id="vc-vehicle-name" name="vehicule-concerne" value="">
         <div class="form-group">
@@ -202,12 +194,7 @@
       }
 
       var form = document.getElementById('vehicle-contact-form');
-      var formData = new FormData(form);
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData).toString()
-      }).catch(function(err) { console.log('Netlify Forms fallback:', err); });
+      form.submit();
 
       try {
         var rdv = {

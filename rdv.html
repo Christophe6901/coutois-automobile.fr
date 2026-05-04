@@ -8,16 +8,6 @@
 </head>
 <body>
 
-<!-- Netlify Forms detection -->
-<form name="devis-mecanique" netlify netlify-honeypot="bot-field" hidden>
-  <input name="form-name" type="hidden" value="devis-mecanique">
-  <input name="nom">
-  <input name="telephone">
-  <input name="email">
-  <input name="vehicule">
-  <textarea name="probleme"></textarea>
-</form>
-
   <nav class="nav">
     <a href="index.html" class="nav-logo"><span class="accent">COUTOIS</span> AUTOMOBILE</a>
     <button class="nav-toggle" id="nav-toggle">☰</button>
@@ -41,8 +31,11 @@
       </p>
 
       <div class="form-card anim-scale">
-        <form id="rdv-form" name="devis-mecanique" method="POST" data-netlify="true">
-          <input type="hidden" name="form-name" value="devis-mecanique">
+        <form id="rdv-form" name="devis-mecanique" method="POST" action="https://formsubmit.co/coutoisautomobile@gmail.com">
+          <input type="hidden" name="_subject" value="Demande de Devis">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://coutois-automobile.fr/rdv.html?sent=1">
+          <input type="hidden" name="_template" value="table">
           <div class="grid-2" style="gap:20px;">
             <div class="form-group">
               <label class="form-label" for="rdv-name">Nom complet *</label>
@@ -120,49 +113,45 @@
 
   <script src="js/app.js"></script>
   <script>
-    document.getElementById('rdv-submit-btn').addEventListener('click', function(e) {
-      e.preventDefault();
+    // Check if returning from FormSubmit (after redirect)
+    if (window.location.search.includes('sent=1')) {
+      document.getElementById('rdv-form').style.display = 'none';
+      document.getElementById('rdv-confirmation').style.display = 'block';
+    }
 
+    document.getElementById('rdv-submit-btn').addEventListener('click', function(e) {
       var name = document.getElementById('rdv-name').value.trim();
       var phone = document.getElementById('rdv-phone').value.trim();
       var vehicle = document.getElementById('rdv-vehicle').value.trim();
       var problem = document.getElementById('rdv-problem').value.trim();
 
       if (!name || !phone || !vehicle || !problem) {
+        e.preventDefault();
         alert('Veuillez remplir tous les champs obligatoires.');
         return;
       }
 
-      // Submit to Netlify Forms
-      var form = document.getElementById('rdv-form');
-      var formData = new FormData(form);
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData).toString()
-      }).catch(function(err) { console.log('Netlify Forms fallback:', err); });
-
-      // Also save to localStorage for planning (local use)
-      var rdv = {
-        id: 'rdv_' + Date.now(),
-        name: name,
-        phone: phone,
-        email: (document.getElementById('rdv-email').value || '').trim(),
-        vehicle: vehicle,
-        service: 'DEVIS',
-        duration: 0.5,
-        notes: problem,
-        rdvType: 'devis',
-        createdAt: new Date().toISOString()
-      };
+      // Save to localStorage for planning (local use)
       try {
+        var rdv = {
+          id: 'rdv_' + Date.now(),
+          name: name,
+          phone: phone,
+          email: (document.getElementById('rdv-email').value || '').trim(),
+          vehicle: vehicle,
+          service: 'DEVIS',
+          duration: 0.5,
+          notes: problem,
+          rdvType: 'devis',
+          createdAt: new Date().toISOString()
+        };
         var inbox = JSON.parse(localStorage.getItem('garage_rdv_inbox') || '[]');
         inbox.push(rdv);
         localStorage.setItem('garage_rdv_inbox', JSON.stringify(inbox));
-      } catch(err) { /* localStorage may not be available on hosted site */ }
+      } catch(err) { }
 
-      document.getElementById('rdv-form').style.display = 'none';
-      document.getElementById('rdv-confirmation').style.display = 'block';
+      // Let the form submit natively to FormSubmit
+      document.getElementById('rdv-form').submit();
     });
   </script>
   <!-- WhatsApp -->

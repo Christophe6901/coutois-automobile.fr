@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Christophe6901/coutois-automobile.fr
   branch: main
 
 media_folder: "images/vehicules"
