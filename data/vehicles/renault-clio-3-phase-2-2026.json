@@ -1,0 +1,25 @@
+{
+  "photos": [
+    "/images/vehicules/img_7096.jpeg",
+    "/images/vehicules/img_7104.jpeg",
+    "/images/vehicules/img_7105.jpeg",
+    "/images/vehicules/img_7106.jpeg"
+  ],
+  "km": 84127,
+  "color": "Noir",
+  "power": "75 ch",
+  "brand": "RENAULT",
+  "guarantee": "3 mois",
+  "price": 4999,
+  "model": "Clio 3 phase 2",
+  "equipment": [
+    "Ecran TomTom"
+  ],
+  "status": "sale",
+  "fuel": "Essence",
+  "registration": "03/2012",
+  "createdAt": "2026-05-05",
+  "gearbox": "Manuelle",
+  "year": 2012,
+  "fiscal": "5 Cv"
+}
