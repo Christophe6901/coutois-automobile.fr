@@ -103,7 +103,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Téléphone *</label>
-          <input type="tel" id="vc-phone" name="telephone" required placeholder="06 00 00 00 00">
+          <input type="tel" id="vc-phone" name="telephone" required placeholder="06 12 34 56 78" maxlength="14">
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
@@ -184,6 +184,18 @@
       }, 100);
     });
 
+
+// Phone formatting
+    document.getElementById('vc-phone').addEventListener('input', function(e) {
+      var val = this.value.replace(/\D/g, '').substring(0, 10);
+      var formatted = '';
+      for (var i = 0; i < val.length; i++) {
+        if (i > 0 && i % 2 === 0) formatted += ' ';
+        formatted += val[i];
+      }
+      this.value = formatted;
+    });
+    
     // Submit vehicle contact form
     document.getElementById('vc-submit').addEventListener('click', function() {
       var name = document.getElementById('vc-name').value.trim();
