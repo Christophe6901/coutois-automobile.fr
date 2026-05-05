@@ -904,6 +904,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 768px) {
+  /* Nav */
   .nav-links { display: none; }
   .nav-phone { display: none; }
   .nav-toggle { display: block; }
@@ -916,14 +917,92 @@ input:focus, select:focus, textarea:focus {
     padding: 16px;
     border-bottom: 3px solid var(--accent);
   }
-  .grid-3, .grid-auto { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 40px; }
-  .section-title { font-size: 32px; }
+
+  /* Page top: more padding to avoid content hidden behind fixed nav */
+  .page-top {
+    padding-top: 100px !important;
+  }
+  .section-padding {
+    padding: 48px 0;
+  }
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Typography */
+  .hero h1 { font-size: 36px !important; }
+  .hero p { font-size: 15px; }
+  .section-title { font-size: 28px !important; }
+  .section-label { font-size: 12px; letter-spacing: 2px; }
+
+  /* Grids */
+  .grid-2 { grid-template-columns: 1fr !important; gap: 20px; }
+  .grid-3, .grid-auto { grid-template-columns: 1fr !important; }
+  .grid-4 { grid-template-columns: 1fr !important; }
+
+  /* Vehicle detail */
+  .detail-grid { grid-template-columns: 1fr !important; gap: 24px; }
+  .detail-main-img img { height: 250px; }
+  .detail-thumbs img { width: 70px; height: 50px; }
+  #detail-title { font-size: 26px !important; }
+  .detail-spec-row { padding: 10px 14px; }
+  .detail-spec-label { font-size: 11px; }
+  .detail-spec-value { font-size: 13px; }
+  .detail-spec-value.price { font-size: 20px !important; }
+  .detail-equipment-grid { grid-template-columns: 1fr !important; }
+
+  /* Stats */
   .stats-bar { flex-wrap: wrap; gap: 24px; }
   .stats-bar > div { flex: 1 1 40%; text-align: center; }
-  .detail-main-img img { height: 280px; }
-  .form-card { padding: 24px; }
-  .footer-cols { flex-direction: column; gap: 24px; }
+  .stats-bar .stat-number { font-size: 36px; }
+
+  /* CTA */
+  .cta-banner h2 { font-size: 24px !important; }
+
+  /* Services */
+  .service-card { padding: 20px 18px; }
+
+  /* Forms */
+  .form-card { padding: 20px 16px; }
+  .form-3cols {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .form-3cols > *:last-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Buttons */
+  .btn { font-size: 15px; padding: 12px 24px; }
+
+  /* Footer */
+  .footer-top { flex-direction: column; gap: 24px; }
+  .footer-cols { flex-direction: column; gap: 20px; }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    padding-bottom: 80px;
+  }
+
+  /* WhatsApp smaller on mobile */
+  .whatsapp-float {
+    width: 52px;
+    height: 52px;
+    bottom: 16px;
+    right: 16px;
+  }
+  .whatsapp-float svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Facade photo section */
+  section:has(img[alt*="Coutois"]) {
+    height: 220px !important;
+  }
+  section:has(img[alt*="Coutois"]) h2 {
+    font-size: 28px !important;
+  }
 }
 
 /* --- WhatsApp floating button --- */
@@ -976,97 +1055,14 @@ input:focus, select:focus, textarea:focus {
   color: var(--white);
 }
 
-/* ============================================
-   PATCH MOBILE — Coller ce bloc à la fin de style.css
-   (juste avant la dernière accolade si elle existe,
-    ou tout à la fin du fichier)
-   ============================================ */
-
 /* --- Vehicle detail grid (desktop) --- */
 .detail-grid {
   grid-template-columns: 1fr 400px;
 }
 
-/* --- Mobile fixes --- */
-@media (max-width: 768px) {
-  .detail-grid {
-    grid-template-columns: 1fr !important;
-    gap: 24px;
-  }
-  .detail-main-img img {
-    height: 250px;
-  }
-  .detail-thumbs img {
-    width: 70px;
-    height: 50px;
-  }
-  #detail-title {
-    font-size: 26px !important;
-  }
-  .detail-spec-row {
-    padding: 10px 14px;
-  }
-  .detail-spec-label {
-    font-size: 11px;
-  }
-  .detail-spec-value {
-    font-size: 13px;
-  }
-  .detail-spec-value.price {
-    font-size: 20px !important;
-  }
-  .detail-equipment-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .hero h1 {
-    font-size: 36px !important;
-  }
-  .hero p {
-    font-size: 15px;
-  }
-  .section-title {
-    font-size: 28px !important;
-  }
-  .stats-bar .stat-number {
-    font-size: 36px;
-  }
-  .cta-banner h2 {
-    font-size: 24px !important;
-  }
-  .grid-4 {
-    grid-template-columns: 1fr !important;
-  }
-  .service-card {
-    padding: 20px 18px;
-  }
-  .footer-cols {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .footer-top {
-    flex-direction: column;
-    gap: 24px;
-  }
-  .btn {
-    font-size: 15px;
-    padding: 12px 24px;
-  }
-  .container {
-    padding: 0 16px;
-  }
-  .section-padding {
-    padding: 48px 0;
-  }
-
-  /* --- Facade section mobile --- */
-@media (max-width: 768px) {
-  section > div > img[alt*="Coutois"] {
-    object-position: center 30%;
-  }
-  section:has(img[alt*="Coutois"]) {
-    height: 220px !important;
-  }
-  section:has(img[alt*="Coutois"]) h2 {
-    font-size: 28px !important;
-  }
+/* --- Form 3 columns class --- */
+.form-3cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
 }
