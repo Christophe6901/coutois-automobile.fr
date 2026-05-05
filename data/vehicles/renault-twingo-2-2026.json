@@ -1,12 +1,21 @@
 {
-  "km": 130000,
+  "photos": [
+    "/images/vehicules/img_6958.jpg",
+    "/images/vehicules/img_6959.jpg",
+    "/images/vehicules/img_6963.jpg"
+  ],
+  "km": 153703,
+  "color": "Gris",
+  "power": "58 ch",
   "brand": "RENAULT",
   "guarantee": "3 mois",
-  "price": 1000,
+  "price": 2999,
   "model": "TWINGO 2",
   "status": "sale",
   "fuel": "Essence",
+  "registration": "10/2008",
   "createdAt": "2026-05-05",
   "gearbox": "Manuelle",
-  "year": 2003
+  "year": 2008,
+  "fiscal": "4 Cv"
 }
