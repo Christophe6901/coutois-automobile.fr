@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nos Véhicules — Coutois Automobile</title>
+  <title>Véhicules d'occasion à Millery (69) — Coutois Automobile</title>
+  <meta name="description" content="Découvrez nos véhicules d'occasion sélectionnés avec soin à Millery (69390). Garantie 3 mois, toutes marques. Coutois Automobile, ex Garage du Coutois.">
+  <link rel="canonical" href="https://coutois-automobile.fr/vehicules.html">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -56,7 +58,7 @@
       </div>
       <div class="footer-bottom">
         <span>© 2026 Coutois Automobile. Tous droits réservés.</span>
-        <span><a href="mentions-legales.html" style="color:#6b7894;">Mentions légales</a> · Politique de confidentialité</span>
+        <span><a href="mentions-legales.html" style="color:#6b7894;">Mentions légales</a> · <a href="mentions-legales.html#donnees-personnelles" style="color:#6b7894;">Politique de confidentialité</a></span>
       </div>
     </div>
   </footer>
@@ -66,7 +68,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       function waitAndRender() {
   if (App.ready) {
-    App.renderVehicleGrid('vehicles-grid');
+    App.renderVehicleGrid('vehicles-grid', 3);
   } else {
     setTimeout(waitAndRender, 100);
   }

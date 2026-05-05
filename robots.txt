@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /backoffice-local.html
+Disallow: /planning.html
+
+Sitemap: https://coutois-automobile.fr/sitemap.xml
