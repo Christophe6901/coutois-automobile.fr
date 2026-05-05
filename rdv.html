@@ -39,6 +39,7 @@
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_next" value="https://coutois-automobile.fr/rdv.html?sent=1">
           <input type="hidden" name="_template" value="table">
+
           <div class="grid-2" style="gap:20px;">
             <div class="form-group">
               <label class="form-label" for="rdv-name">Nom complet *</label>
@@ -46,7 +47,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="rdv-phone">Téléphone *</label>
-              <input type="tel" id="rdv-phone" name="telephone" placeholder="06 00 00 00 00" required>
+              <input type="tel" id="rdv-phone" name="telephone" placeholder="06 12 34 56 78" required maxlength="14">
             </div>
           </div>
 
@@ -55,19 +56,66 @@
             <input type="email" id="rdv-email" name="email" placeholder="jean@email.com">
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="rdv-vehicle">Votre véhicule (marque, modèle, année) *</label>
-            <input type="text" id="rdv-vehicle" name="vehicule" placeholder="Renault Clio 4 1.5 dCi 2018" required>
+          <!-- Véhicule : Marque / Modèle / Année -->
+          <div class="grid-2" style="gap:20px;">
+            <div class="form-group" style="flex:2;">
+              <label class="form-label" for="rdv-marque">Marque *</label>
+              <select id="rdv-marque" name="marque" required style="font-size:15px;">
+                <option value="">Sélectionner...</option>
+                <option>Alfa Romeo</option>
+                <option>Audi</option>
+                <option>BMW</option>
+                <option>Citroën</option>
+                <option>Dacia</option>
+                <option>DS</option>
+                <option>Fiat</option>
+                <option>Ford</option>
+                <option>Honda</option>
+                <option>Hyundai</option>
+                <option>Jaguar</option>
+                <option>Jeep</option>
+                <option>Kia</option>
+                <option>Land Rover</option>
+                <option>Lexus</option>
+                <option>Mazda</option>
+                <option>Mercedes</option>
+                <option>Mini</option>
+                <option>Mitsubishi</option>
+                <option>Nissan</option>
+                <option>Opel</option>
+                <option>Peugeot</option>
+                <option>Porsche</option>
+                <option>Renault</option>
+                <option>Seat</option>
+                <option>Skoda</option>
+                <option>Smart</option>
+                <option>Suzuki</option>
+                <option>Tesla</option>
+                <option>Toyota</option>
+                <option>Volkswagen</option>
+                <option>Volvo</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:2;">
+              <label class="form-label" for="rdv-modele">Modèle *</label>
+              <input type="text" id="rdv-modele" name="modele" list="modeles-list" placeholder="Ex: Clio, 308, Golf..." required>
+              <datalist id="modeles-list"></datalist>
+            </div>
           </div>
 
-          <div class="grid-2" style="gap:20px;">
+          <div class="grid-2" style="gap:20px; grid-template-columns: 1fr 1fr 1fr;">
             <div class="form-group">
-              <label class="form-label" for="rdv-plaque">Plaque d'immatriculation *</label>
-              <input type="text" id="rdv-plaque" name="immatriculation" placeholder="AB-123-CD" required style="text-transform:uppercase;">
+              <label class="form-label" for="rdv-annee">Année *</label>
+              <input type="number" id="rdv-annee" name="annee" placeholder="2019" min="1990" max="2026" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rdv-plaque">Immatriculation *</label>
+              <input type="text" id="rdv-plaque" name="immatriculation" placeholder="AA-123-BB" required maxlength="9" style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">
             </div>
             <div class="form-group">
               <label class="form-label" for="rdv-km">Kilométrage *</label>
-              <input type="number" id="rdv-km" name="kilometrage" placeholder="87000" required>
+              <input type="text" id="rdv-km" name="kilometrage" placeholder="87 000" required>
             </div>
           </div>
 
@@ -127,32 +175,116 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Check if returning from FormSubmit (after redirect)
+    // === Models per brand ===
+    var modelsByBrand = {
+      'Alfa Romeo': ['Giulia','Stelvio','Tonale','Giulietta','MiTo','159'],
+      'Audi': ['A1','A3','A4','A5','A6','Q2','Q3','Q5','Q7','TT','e-tron'],
+      'BMW': ['Série 1','Série 2','Série 3','Série 4','Série 5','X1','X2','X3','X5','i3','i4'],
+      'Citroën': ['C1','C3','C3 Aircross','C4','C4 Cactus','C5 Aircross','Berlingo','C3 Picasso','DS3','Jumpy'],
+      'Dacia': ['Sandero','Duster','Logan','Spring','Jogger','Lodgy','Dokker'],
+      'DS': ['DS3','DS4','DS5','DS7','DS9'],
+      'Fiat': ['500','500X','500L','Panda','Tipo','Punto','Ducato','Doblo'],
+      'Ford': ['Fiesta','Focus','Puma','Kuga','Mondeo','EcoSport','Transit','Ranger','Mustang'],
+      'Honda': ['Civic','Jazz','HR-V','CR-V','e','ZR-V'],
+      'Hyundai': ['i10','i20','i30','Tucson','Kona','Bayon','Ioniq','Santa Fe'],
+      'Jaguar': ['E-Pace','F-Pace','XE','XF','I-Pace'],
+      'Jeep': ['Renegade','Compass','Cherokee','Wrangler','Grand Cherokee','Avenger'],
+      'Kia': ['Picanto','Rio','Ceed','Sportage','Stonic','Niro','EV6','Sorento'],
+      'Land Rover': ['Evoque','Velar','Discovery','Defender','Range Rover Sport'],
+      'Lexus': ['CT','IS','NX','RX','UX','ES','LC'],
+      'Mazda': ['Mazda2','Mazda3','CX-3','CX-5','CX-30','MX-5','CX-60'],
+      'Mercedes': ['Classe A','Classe B','Classe C','Classe E','CLA','GLA','GLB','GLC','GLE','Vito','Sprinter'],
+      'Mini': ['Cooper','Countryman','Clubman','Cabrio'],
+      'Mitsubishi': ['Space Star','ASX','Eclipse Cross','Outlander','L200'],
+      'Nissan': ['Micra','Juke','Qashqai','X-Trail','Leaf','Navara','Note'],
+      'Opel': ['Corsa','Astra','Crossland','Mokka','Grandland','Zafira','Combo','Vivaro'],
+      'Peugeot': ['108','208','308','408','508','2008','3008','5008','Partner','Expert','Rifter'],
+      'Porsche': ['Cayenne','Macan','911','Taycan','Panamera','Boxster','Cayman'],
+      'Renault': ['Clio','Captur','Mégane','Scénic','Kadjar','Arkana','Twingo','Kangoo','Trafic','Master','ZOE'],
+      'Seat': ['Ibiza','Leon','Arona','Ateca','Tarraco'],
+      'Skoda': ['Fabia','Octavia','Karoq','Kodiaq','Scala','Kamiq','Superb','Enyaq'],
+      'Smart': ['Fortwo','Forfour','#1'],
+      'Suzuki': ['Swift','Ignis','Vitara','S-Cross','Jimny','Across'],
+      'Tesla': ['Model 3','Model Y','Model S','Model X'],
+      'Toyota': ['Yaris','Corolla','C-HR','RAV4','Aygo','Camry','Hilux','Land Cruiser','Supra'],
+      'Volkswagen': ['Polo','Golf','T-Roc','Tiguan','T-Cross','Passat','Touran','Caddy','Transporter','ID.3','ID.4'],
+      'Volvo': ['XC40','XC60','XC90','V40','V60','S60','S90','C40']
+    };
+
+    // Update model suggestions when brand changes
+    document.getElementById('rdv-marque').addEventListener('change', function() {
+      var brand = this.value;
+      var datalist = document.getElementById('modeles-list');
+      datalist.innerHTML = '';
+      var models = modelsByBrand[brand] || [];
+      models.forEach(function(m) {
+        var opt = document.createElement('option');
+        opt.value = m;
+        datalist.appendChild(opt);
+      });
+      document.getElementById('rdv-modele').value = '';
+      document.getElementById('rdv-modele').focus();
+    });
+
+    // === Phone formatting: 06 12 34 56 78 ===
+    document.getElementById('rdv-phone').addEventListener('input', function(e) {
+      var val = this.value.replace(/\D/g, '').substring(0, 10);
+      var formatted = '';
+      for (var i = 0; i < val.length; i++) {
+        if (i > 0 && i % 2 === 0) formatted += ' ';
+        formatted += val[i];
+      }
+      this.value = formatted;
+    });
+
+    // === Plate formatting: AA-123-BB ===
+    document.getElementById('rdv-plaque').addEventListener('input', function(e) {
+      var val = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().substring(0, 7);
+      var formatted = '';
+      for (var i = 0; i < val.length; i++) {
+        if (i === 2 || i === 5) formatted += '-';
+        formatted += val[i];
+      }
+      this.value = formatted;
+    });
+
+    // === KM formatting: 87 000 ===
+    document.getElementById('rdv-km').addEventListener('input', function(e) {
+      var val = this.value.replace(/\D/g, '');
+      this.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    });
+
+    // === Check if returning from FormSubmit ===
     if (window.location.search.includes('sent=1')) {
       document.getElementById('rdv-form').style.display = 'none';
       document.getElementById('rdv-confirmation').style.display = 'block';
     }
 
+    // === Submit ===
     document.getElementById('rdv-submit-btn').addEventListener('click', function(e) {
       var name = document.getElementById('rdv-name').value.trim();
       var phone = document.getElementById('rdv-phone').value.trim();
-      var vehicle = document.getElementById('rdv-vehicle').value.trim();
+      var marque = document.getElementById('rdv-marque').value;
+      var modele = document.getElementById('rdv-modele').value.trim();
+      var annee = document.getElementById('rdv-annee').value.trim();
+      var plaque = document.getElementById('rdv-plaque').value.trim();
+      var km = document.getElementById('rdv-km').value.trim();
       var problem = document.getElementById('rdv-problem').value.trim();
 
-      if (!name || !phone || !vehicle || !problem) {
+      if (!name || !phone || !marque || !modele || !annee || !plaque || !km || !problem) {
         e.preventDefault();
         alert('Veuillez remplir tous les champs obligatoires.');
         return;
       }
 
-      // Save to localStorage for planning (local use)
+      // Save to localStorage for planning
       try {
         var rdv = {
           id: 'rdv_' + Date.now(),
           name: name,
           phone: phone,
           email: (document.getElementById('rdv-email').value || '').trim(),
-          vehicle: vehicle,
+          vehicle: marque + ' ' + modele + ' ' + annee + ' | ' + plaque + ' | ' + km + ' km',
           service: 'DEVIS',
           duration: 0.5,
           notes: problem,
@@ -164,7 +296,6 @@
         localStorage.setItem('garage_rdv_inbox', JSON.stringify(inbox));
       } catch(err) { }
 
-      // Let the form submit natively to FormSubmit
       document.getElementById('rdv-form').submit();
     });
   </script>
