@@ -1,6 +1,31 @@
 [
 {
   "photos": [
+    "/images/vehicules/image2.jpeg",
+    "/images/vehicules/image5.jpeg",
+    "/images/vehicules/image4.jpeg",
+    "/images/vehicules/image3.jpeg",
+    "/images/vehicules/image1.jpeg"
+  ],
+  "km": 232683,
+  "color": "gris",
+  "power": "109 ch",
+  "brand": "PEUGEOT",
+  "guarantee": "3 mois",
+  "price": 2500,
+  "model": "308 ",
+  "status": "sale",
+  "fuel": "Diesel",
+  "registration": "07/2007",
+  "createdAt": "2026-09-17",
+  "gearbox": "Manuelle",
+  "description": "Coutois Automobile vous propose cette Peugeot 308 1.6 HDI de 109 ch, mise en circulation en 2007.\n\nCaractéristiques\n- Marque : Peugeot\n- Modèle : 308\n- Motorisation : 1.6 HDI - 109ch\n- Carburant : Diesel\n- Boîte de vitesses : Manuelle 5 rapports\n- Puissance fiscale : 6 CV\nCarrosserie : Berline 5 portes\n- Nombre de places : 5\n- Couleur : Gris foncé\n- Transmission : Traction avant\n\nEquipements \n- Climatisation\n- Régulateur / limiteur de vitesse\n- Autoradio\n- Commandes au volant\n- Vitres électriques\n- Fermeture centralisée\n- Rétroviseurs électriques\n- Ordinateur de bord\n- Direction assistée \n\nVéhicule idéal pour les trajets quotidiens, la ville comme les longs parcours, avec son moteur diesel 1.6 HDI économique.\n",
+  "year": 2007,
+  "fiscal": "6 cv"
+}
+,
+{
+  "photos": [
     "/images/vehicules/img_7096.jpeg",
     "/images/vehicules/img_7104.jpeg",
     "/images/vehicules/img_7105.jpeg",
