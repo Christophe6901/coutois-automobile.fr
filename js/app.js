@@ -239,3 +239,121 @@ async init() {
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());
+
+/* ============================================
+   Infos du garage (horaires + annonce)
+   Source : data/site.json, modifiable dans /admin/ > Infos du garage
+   ============================================ */
+const SiteInfo = {
+  DAYS: [
+    ['lundi', 'Lun', 'Lundi', 'Monday'], ['mardi', 'Mar', 'Mardi', 'Tuesday'],
+    ['mercredi', 'Mer', 'Mercredi', 'Wednesday'], ['jeudi', 'Jeu', 'Jeudi', 'Thursday'],
+    ['vendredi', 'Ven', 'Vendredi', 'Friday'], ['samedi', 'Sam', 'Samedi', 'Saturday'],
+    ['dimanche', 'Dim', 'Dimanche', 'Sunday'],
+  ],
+
+  async init() {
+    try {
+      const res = await fetch('data/site.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.horaires) this.renderHours(data.horaires);
+      if (data.annonce) this.renderBanner(data.annonce);
+    } catch (e) { /* on garde le contenu statique de la page */ }
+  },
+
+  // "08:00" -> "8h" (court) ou "8h00" (long) ; "08:30" -> "8h30"
+  fmt(t, long) {
+    if (!t) return '';
+    const [h, m] = t.split(':');
+    return parseInt(h, 10) + 'h' + (m === '00' && !long ? '' : m);
+  },
+
+  ranges(d) {
+    const r = [];
+    if (d.matin_debut && d.matin_fin) r.push([d.matin_debut, d.matin_fin]);
+    if (d.aprem_debut && d.aprem_fin) r.push([d.aprem_debut, d.aprem_fin]);
+    return r;
+  },
+
+  dayText(d, long) {
+    const r = d && d.ouvert ? this.ranges(d) : [];
+    if (!r.length) return 'Fermé';
+    const sep = long ? ' - ' : '-';
+    return r.map(([a, b]) => this.fmt(a, long) + sep + this.fmt(b, long)).join(' / ');
+  },
+
+  // Regroupe les jours consécutifs identiques : "Lun-Ven : 8h-12h / 14h-18h"
+  groups(h, long) {
+    const out = [];
+    this.DAYS.forEach(([key, s, l]) => {
+      const txt = this.dayText(h[key], long);
+      const last = out[out.length - 1];
+      if (last && last.txt === txt) { last.end = long ? l : s; }
+      else out.push({ start: long ? l : s, end: null, txt });
+    });
+    return out.map(g => (g.end ? g.start + (long ? ' - ' : '-') + g.end : g.start) + ' : ' + g.txt);
+  },
+
+  renderHours(h) {
+    document.querySelectorAll('[data-hours="short"]').forEach(el => {
+      el.innerHTML = '';
+      this.groups(h, false).forEach((line, i) => {
+        if (i) el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(line));
+      });
+    });
+    document.querySelectorAll('[data-hours="long"]').forEach(el => {
+      el.textContent = this.groups(h, true).join('\n');
+    });
+    // Données structurées Google (LocalBusiness)
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+      try {
+        const j = JSON.parse(s.textContent);
+        if (!j.openingHoursSpecification) return;
+        const spec = [];
+        this.DAYS.forEach(([key, , , en]) => {
+          const d = h[key];
+          if (!d || !d.ouvert) return;
+          this.ranges(d).forEach(([opens, closes]) => {
+            const same = spec.find(x => x.opens === opens && x.closes === closes);
+            if (same) same.dayOfWeek.push(en);
+            else spec.push({ '@type': 'OpeningHoursSpecification', dayOfWeek: [en], opens, closes });
+          });
+        });
+        j.openingHoursSpecification = spec;
+        s.textContent = JSON.stringify(j);
+      } catch (e) { /* JSON-LD invalide : on n'y touche pas */ }
+    });
+  },
+
+  renderBanner(a) {
+    if (!a.active || !a.message) return;
+    const now = new Date();
+    const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    if (a.debut && today < String(a.debut).slice(0, 10)) return;
+    if (a.fin && today > String(a.fin).slice(0, 10)) return;
+    const key = 'annonce-fermee:' + a.message;
+    try { if (sessionStorage.getItem(key)) return; } catch (e) {}
+
+    const bar = document.createElement('div');
+    bar.className = 'site-banner';
+    bar.setAttribute('role', 'status');
+    const msg = document.createElement('span');
+    msg.textContent = a.message;
+    const close = document.createElement('button');
+    close.className = 'site-banner-close';
+    close.setAttribute('aria-label', "Fermer l'annonce");
+    close.textContent = '×';
+    close.addEventListener('click', () => {
+      bar.remove();
+      document.body.classList.remove('has-banner');
+      try { sessionStorage.setItem(key, '1'); } catch (e) {}
+    });
+    bar.append(msg, close);
+    document.body.appendChild(bar);
+    document.body.classList.add('has-banner');
+  },
+};
+
+document.addEventListener('DOMContentLoaded', () => SiteInfo.init());

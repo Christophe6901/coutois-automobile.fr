@@ -1066,3 +1066,32 @@ input:focus, select:focus, textarea:focus {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
 }
+
+/* --- Annonce (fermeture exceptionnelle, congés) : gérée dans /admin/ --- */
+.site-banner {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 56px 14px 16px;
+  background: var(--accent);
+  color: var(--white);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+}
+.site-banner-close {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  color: var(--white);
+  font-size: 26px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+body.has-banner { padding-bottom: 60px; }
+body.has-banner .whatsapp-float { bottom: 84px; }

@@ -66,3 +66,96 @@ collections:
         default: "sale"
       - { label: "Date de vente", name: "soldDate", widget: "datetime", required: false, date_format: "YYYY-MM-DD", time_format: false }
       - { label: "Date d'ajout", name: "createdAt", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+
+  - name: "garage"
+    label: "Infos du garage"
+    editor: { preview: false }
+    files:
+      - name: "site"
+        label: "Horaires et annonce"
+        file: "data/site.json"
+        format: "json"
+        fields:
+          - label: "Annonce en bas de page (fermeture exceptionnelle, congés...)"
+            name: "annonce"
+            widget: "object"
+            fields:
+              - { label: "Afficher l'annonce", name: "active", widget: "boolean", default: false }
+              - { label: "Message", name: "message", widget: "string", required: false, hint: "Ex : Garage fermé du 24 décembre au 2 janvier. Bonnes fêtes !" }
+              - { label: "Afficher à partir du", name: "debut", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false, hint: "Vide = dès maintenant" }
+              - { label: "Masquer après le", name: "fin", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false, hint: "Vide = jusqu'à désactivation. L'annonce disparaît seule après cette date." }
+          - label: "Horaires d'ouverture"
+            name: "horaires"
+            widget: "object"
+            hint: "Journée continue (ex. 8h-19h) : 08:00 / 19:00 au matin, après-midi vide."
+            fields:
+              - label: "Lundi"
+                name: "lundi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: &heures ["06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"], required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Mardi"
+                name: "mardi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Mercredi"
+                name: "mercredi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Jeudi"
+                name: "jeudi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Vendredi"
+                name: "vendredi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Samedi"
+                name: "samedi"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
+              - label: "Dimanche"
+                name: "dimanche"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Ouvert ce jour-là", name: "ouvert", widget: "boolean", default: true }
+                  - { label: "Matin : ouverture", name: "matin_debut", widget: "select", options: *heures, required: false }
+                  - { label: "Matin : fermeture", name: "matin_fin", widget: "select", options: *heures, required: false }
+                  - { label: "Après-midi : ouverture", name: "aprem_debut", widget: "select", options: *heures, required: false, hint: "Laisser vide si journée continue" }
+                  - { label: "Après-midi : fermeture", name: "aprem_fin", widget: "select", options: *heures, required: false }
